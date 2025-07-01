@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: lightgray;
+    }
+
+    #qrdiv {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 90vw;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    textarea {
+      width: 90%;
+      max-width: 300px;
+      height: 80px;
+    }
+
+    #img-container {
+      width: 35vw;
+      max-width: 250px;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+
+    #img-container canvas,
+    #img-container img {
+      width: 100%;
+      height: auto;
+    }
+
+    #download-btn {
+      display: none;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="qrdiv">
+    <div><strong>QR Code Generator</strong></div>
+
+    <form name="qrinp" onsubmit="return false;">
+      <label>
+        ECC Level (1–4):
+        <input type="number" id="eccval" name="ECC" value="1" min="1" max="4" size="1" />
+      </label>
+      <label>
+        Text:
+        <textarea id="string" name="qrinput">Write Here....</textarea>
+      </label>
+      <input type="button" value="Generate QR Code" onclick="generateQR()" />
+    </form>
+
+    <div id="img-container"></div>
+    <button id="download-btn" onclick="downloadQR()">Download QR Code</button>
+  </div>
+
+  <script type="text/javascript" src="qr.js"></script>
+  <script>
+    function generateQR() {
+      const text = document.getElementById('string').value;
+      let ecc = parseInt(document.getElementById('eccval').value, 10);
+      if (isNaN(ecc) || ecc < 1 || ecc > 4) ecc = 1; // default ECC=1 if invalid
+
+      const imgContainer = document.getElementById('img-container');
+
+      // Clear previous QR code
+      imgContainer.innerHTML = '';
+      document.getElementById('download-btn').style.display = 'none';
+
+      // Generate QR code
+      doqr(text, ecc, '#eee', '#000', imgContainer);
+
+      // Show download button if canvas exists
+      setTimeout(() => {
+        const canvas = imgContainer.querySelector('canvas');
+        if (canvas) {
+          document.getElementById('download-btn').style.display = 'inline-block';
+        }
+      }, 100);
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#img-container canvas');
+      if (!canvas) return;
+
+      const link = document.createElement('a');
+      link.download = 'qr-code.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
