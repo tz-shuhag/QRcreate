@@ -767,12 +767,7 @@ container.appendChild(newCanvas);
 
 }
 
-/* The Trim Canvas function is MIT.
- * http://rem.mit-license.org
- 
- * Taken from Our Code World.
- * https://ourcodeworld.com/articles/read/683/how-to-remove-the-transparent-pixels-that-surrounds-a-canvas-in-javascript
- */
+
 function trimCanvas(c) {
     var ctx = c.getContext('2d'),
         copy = document.createElement('canvas').getContext('2d'),
